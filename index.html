@@ -94,6 +94,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
     }
 
     .unicorn-title {
@@ -104,10 +105,10 @@
     }
 
     .unicorn-stage {
-      font-size: 5rem;
       line-height: 1;
       margin: 8px 0;
-      transition: transform 0.25s ease;
+      transition: transform 0.3s ease, font-size 0.3s ease;
+      display: inline-block;
     }
 
     .unicorn-style-1 { filter: grayscale(0.2); }
@@ -263,12 +264,12 @@
 
   <div class="container">
     <h1>❄️ Princess Snowflake Counting Game 👑</h1>
-    <div class="subtitle">Count the snowflakes and make the unicorn prettier each time you get it right!</div>
+    <div class="subtitle">Count the snowflakes and make the unicorn prettier and bigger each time you get it right!</div>
 
     <div class="top-row">
       <div class="card princess-box">
         <div class="princess-emoji" id="princessEmoji">👸</div>
-        <div class="princess-name" id="princessName">Ice Princess</div>
+        <div class="princess-name">Ice Princess</div>
       </div>
 
       <div class="card unicorn-box">
@@ -333,34 +334,38 @@
       return 1;
     }
 
+    function getUnicornSize(score) {
+      const base = 5;
+      const size = base + (score * 0.22);
+      return Math.min(size, 10);
+    }
+
     function updateUnicorn() {
       const level = getUnicornLevel(score);
+      const unicornSize = getUnicornSize(score);
+
       unicornStageEl.className = "unicorn-stage unicorn-style-" + level;
+      unicornStageEl.style.fontSize = unicornSize + "rem";
       levelTextEl.textContent = level;
 
       if (level === 1) {
-        unicornStageEl.textContent = "🦄";
         unicornDescEl.textContent = "A little unicorn";
         sparklesEl.textContent = "✨";
       } else if (level === 2) {
-        unicornStageEl.textContent = "🦄";
         unicornDescEl.textContent = "Prettier unicorn";
         sparklesEl.textContent = "✨ ✨";
       } else if (level === 3) {
-        unicornStageEl.textContent = "🦄";
         unicornDescEl.textContent = "Sparkly unicorn";
         sparklesEl.textContent = "✨ 💖 ✨";
       } else if (level === 4) {
-        unicornStageEl.textContent = "🦄";
         unicornDescEl.textContent = "Royal magic unicorn";
         sparklesEl.textContent = "🌈 ✨ 💖 ✨";
       } else {
-        unicornStageEl.textContent = "🦄";
         unicornDescEl.textContent = "Most beautiful unicorn";
         sparklesEl.textContent = "👑 🌈 ✨ 💖 ✨";
       }
 
-      unicornStageEl.style.transform = "scale(1.2)";
+      unicornStageEl.style.transform = "scale(1.18)";
       setTimeout(() => {
         unicornStageEl.style.transform = "scale(1)";
       }, 220);
@@ -425,7 +430,7 @@
         scoreEl.textContent = score;
         updateUnicorn();
         setPrincessMood("happy");
-        messageEl.textContent = "Yay! The unicorn is prettier now!";
+        messageEl.textContent = "Yay! The unicorn is prettier and bigger now!";
         disableAnswerButtons();
         nextBtn.style.display = "inline-block";
       } else {
