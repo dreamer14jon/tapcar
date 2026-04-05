@@ -3,150 +3,320 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Princess Counting Game</title>
+  <title>Princess Snowflake Counting Game</title>
   <style>
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       text-align: center;
-      background: linear-gradient(to bottom, #dff6ff, #f9e6ff);
-      color: #274472;
+      background: linear-gradient(to bottom, #cfefff 0%, #e8f7ff 40%, #ffe9fb 100%);
+      color: #244a73;
+      overflow-x: hidden;
+    }
+
+    .snow-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      background-image:
+        radial-gradient(circle, white 2px, transparent 2px),
+        radial-gradient(circle, white 1.5px, transparent 1.5px),
+        radial-gradient(circle, white 2.5px, transparent 2.5px);
+      background-size: 120px 120px, 180px 180px, 240px 240px;
+      background-position: 0 0, 40px 70px, 80px 20px;
+      animation: drift 16s linear infinite;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(-12px); }
+      to { transform: translateY(12px); }
     }
 
     .container {
-      max-width: 900px;
+      max-width: 980px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 20px 16px 40px;
+      position: relative;
+      z-index: 1;
     }
 
     h1 {
       font-size: 2.2rem;
-      color: #7b4bb7;
-      margin-bottom: 10px;
+      margin: 8px 0;
+      color: #7a45b8;
     }
 
     .subtitle {
+      font-size: 1.1rem;
+      margin-bottom: 18px;
+    }
+
+    .top-row {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.88);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+    }
+
+    .princess-box {
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .princess-emoji {
+      font-size: 4.6rem;
+      margin-bottom: 10px;
+    }
+
+    .princess-name {
       font-size: 1.2rem;
-      margin-bottom: 20px;
+      font-weight: bold;
+      color: #7a45b8;
+    }
+
+    .unicorn-box {
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .unicorn-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #7a45b8;
+    }
+
+    .unicorn-stage {
+      font-size: 5rem;
+      line-height: 1;
+      margin: 8px 0;
+      transition: transform 0.25s ease;
+    }
+
+    .unicorn-style-1 { filter: grayscale(0.2); }
+    .unicorn-style-2 { text-shadow: 0 0 8px rgba(255,255,255,0.6); }
+    .unicorn-style-3 { text-shadow: 0 0 12px rgba(255,182,255,0.9), 0 0 24px rgba(255,255,255,0.8); }
+    .unicorn-style-4 { text-shadow: 0 0 12px rgba(173,216,255,1), 0 0 24px rgba(255,182,255,1), 0 0 34px rgba(255,255,255,0.9); }
+    .unicorn-style-5 { text-shadow: 0 0 12px rgba(255,220,120,1), 0 0 26px rgba(255,182,255,1), 0 0 36px rgba(173,216,255,1); }
+
+    .unicorn-desc {
+      font-size: 1rem;
+      min-height: 24px;
+      margin-top: 4px;
+    }
+
+    .sparkles {
+      font-size: 1.4rem;
+      min-height: 28px;
+      letter-spacing: 4px;
     }
 
     .game-box {
       background: rgba(255,255,255,0.9);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+      border-radius: 28px;
+      padding: 22px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.12);
     }
 
-    .princess {
-      font-size: 4rem;
-      margin-bottom: 10px;
+    .score-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      background: #f5eaff;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: bold;
+      color: #6a3ca8;
     }
 
     .question {
       font-size: 1.8rem;
       font-weight: bold;
-      margin-bottom: 15px;
+      margin: 16px 0;
     }
 
-    .items {
-      font-size: 2.4rem;
-      min-height: 90px;
-      margin-bottom: 20px;
-      line-height: 1.5;
+    .snow-area {
+      min-height: 130px;
+      background: linear-gradient(to bottom, #eef9ff, #ffffff);
+      border: 2px dashed #b8ddff;
+      border-radius: 22px;
+      padding: 16px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .snowflakes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px 12px;
+      max-width: 650px;
+    }
+
+    .flake {
+      font-size: 2.3rem;
+      animation: twinkle 1.8s ease-in-out infinite;
+    }
+
+    .flake:nth-child(2n) { animation-delay: 0.2s; }
+    .flake:nth-child(3n) { animation-delay: 0.4s; }
+    .flake:nth-child(4n) { animation-delay: 0.6s; }
+
+    @keyframes twinkle {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.8; }
     }
 
     .answers {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
-    button {
-      font-size: 1.4rem;
-      padding: 16px;
+    .answer-btn, .next-btn {
       border: none;
       border-radius: 18px;
-      background: #ffd9f7;
-      color: #5b2d84;
+      padding: 16px 10px;
+      font-size: 1.45rem;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background: linear-gradient(to bottom, #ffe4fb, #ffd3f2);
+      color: #6a3ca8;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.08);
     }
 
-    button:hover {
+    .answer-btn:hover, .next-btn:hover {
       transform: scale(1.04);
     }
 
+    .answer-btn:disabled {
+      opacity: 0.65;
+      cursor: default;
+      transform: none;
+    }
+
     .message {
-      font-size: 1.5rem;
-      min-height: 40px;
-      margin-bottom: 15px;
+      min-height: 38px;
+      font-size: 1.4rem;
       font-weight: bold;
-    }
-
-    .score {
-      font-size: 1.2rem;
-      margin-bottom: 15px;
-    }
-
-    .reward {
-      font-size: 2rem;
-      min-height: 40px;
-      margin-top: 10px;
+      margin-bottom: 12px;
     }
 
     .next-btn {
       display: none;
-      background: #cfe8ff;
-      color: #204060;
+      background: linear-gradient(to bottom, #dff3ff, #c9e9ff);
+      color: #24537f;
     }
 
-    @media (max-width: 700px) {
+    .footer-note {
+      margin-top: 14px;
+      font-size: 0.98rem;
+      color: #6b7f96;
+    }
+
+    @media (max-width: 800px) {
+      .top-row {
+        grid-template-columns: 1fr;
+      }
+
       .answers {
         grid-template-columns: repeat(2, 1fr);
       }
 
       .question {
-        font-size: 1.4rem;
+        font-size: 1.45rem;
       }
 
-      .items {
+      .flake {
         font-size: 2rem;
-      }
-
-      button {
-        font-size: 1.2rem;
-        padding: 14px;
       }
     }
   </style>
 </head>
 <body>
+  <div class="snow-overlay"></div>
+
   <div class="container">
-    <h1>❄️ Princess Counting Game 👑</h1>
-    <div class="subtitle">Count the snowflakes and pick the right number!</div>
+    <h1>❄️ Princess Snowflake Counting Game 👑</h1>
+    <div class="subtitle">Count the snowflakes and make the unicorn prettier each time you get it right!</div>
+
+    <div class="top-row">
+      <div class="card princess-box">
+        <div class="princess-emoji" id="princessEmoji">👸</div>
+        <div class="princess-name" id="princessName">Ice Princess</div>
+      </div>
+
+      <div class="card unicorn-box">
+        <div class="unicorn-title">Magic Unicorn</div>
+        <div id="unicornStage" class="unicorn-stage unicorn-style-1">🦄</div>
+        <div id="unicornDesc" class="unicorn-desc">A little unicorn</div>
+        <div id="sparkles" class="sparkles">✨</div>
+      </div>
+
+      <div class="card princess-box">
+        <div class="princess-emoji">❄️🏰</div>
+        <div class="princess-name">Snow Castle</div>
+      </div>
+    </div>
 
     <div class="game-box">
-      <div class="princess" id="princessFace">👸❄️</div>
-      <div class="score">Stars: <span id="score">0</span> ⭐</div>
-      <div class="question">How many snowflakes are there?</div>
-      <div class="items" id="items"></div>
+      <div class="score-row">
+        <div class="pill">Correct: <span id="score">0</span></div>
+        <div class="pill">Level: <span id="levelText">1</span></div>
+      </div>
+
+      <div class="question">How many snowflakes do you see?</div>
+
+      <div class="snow-area">
+        <div class="snowflakes" id="snowflakes"></div>
+      </div>
+
       <div class="answers" id="answers"></div>
+
       <div class="message" id="message"></div>
-      <button class="next-btn" id="nextBtn">Next</button>
-      <div class="reward" id="reward"></div>
+
+      <button id="nextBtn" class="next-btn">Next Snowflake Game</button>
+
+      <div class="footer-note">Count from 1 to 10</div>
     </div>
   </div>
 
   <script>
-    const itemsEl = document.getElementById("items");
+    const snowflakesEl = document.getElementById("snowflakes");
     const answersEl = document.getElementById("answers");
     const messageEl = document.getElementById("message");
     const scoreEl = document.getElementById("score");
     const nextBtn = document.getElementById("nextBtn");
-    const rewardEl = document.getElementById("reward");
-    const princessFace = document.getElementById("princessFace");
+    const unicornStageEl = document.getElementById("unicornStage");
+    const unicornDescEl = document.getElementById("unicornDesc");
+    const sparklesEl = document.getElementById("sparkles");
+    const levelTextEl = document.getElementById("levelText");
+    const princessEmojiEl = document.getElementById("princessEmoji");
 
     let correctAnswer = 1;
     let score = 0;
@@ -155,62 +325,119 @@
       return array.sort(() => Math.random() - 0.5);
     }
 
-    function generateRound() {
-      messageEl.textContent = "";
-      rewardEl.textContent = "";
-      nextBtn.style.display = "none";
-      princessFace.textContent = "👸❄️";
-
-      correctAnswer = Math.floor(Math.random() * 10) + 1;
-
-      let icons = "";
-      for (let i = 0; i < correctAnswer; i++) {
-        icons += "❄️ ";
-      }
-      itemsEl.textContent = icons;
-
-      let choices = new Set();
-      choices.add(correctAnswer);
-
-      while (choices.size < 4) {
-        choices.add(Math.floor(Math.random() * 10) + 1);
-      }
-
-      const finalChoices = shuffle([...choices]);
-      answersEl.innerHTML = "";
-
-      finalChoices.forEach(choice => {
-        const btn = document.createElement("button");
-        btn.textContent = choice;
-        btn.onclick = () => checkAnswer(choice);
-        answersEl.appendChild(btn);
-      });
+    function getUnicornLevel(score) {
+      if (score >= 20) return 5;
+      if (score >= 15) return 4;
+      if (score >= 10) return 3;
+      if (score >= 5) return 2;
+      return 1;
     }
 
-    function disableButtons() {
-      const buttons = answersEl.querySelectorAll("button");
+    function updateUnicorn() {
+      const level = getUnicornLevel(score);
+      unicornStageEl.className = "unicorn-stage unicorn-style-" + level;
+      levelTextEl.textContent = level;
+
+      if (level === 1) {
+        unicornStageEl.textContent = "🦄";
+        unicornDescEl.textContent = "A little unicorn";
+        sparklesEl.textContent = "✨";
+      } else if (level === 2) {
+        unicornStageEl.textContent = "🦄";
+        unicornDescEl.textContent = "Prettier unicorn";
+        sparklesEl.textContent = "✨ ✨";
+      } else if (level === 3) {
+        unicornStageEl.textContent = "🦄";
+        unicornDescEl.textContent = "Sparkly unicorn";
+        sparklesEl.textContent = "✨ 💖 ✨";
+      } else if (level === 4) {
+        unicornStageEl.textContent = "🦄";
+        unicornDescEl.textContent = "Royal magic unicorn";
+        sparklesEl.textContent = "🌈 ✨ 💖 ✨";
+      } else {
+        unicornStageEl.textContent = "🦄";
+        unicornDescEl.textContent = "Most beautiful unicorn";
+        sparklesEl.textContent = "👑 🌈 ✨ 💖 ✨";
+      }
+
+      unicornStageEl.style.transform = "scale(1.2)";
+      setTimeout(() => {
+        unicornStageEl.style.transform = "scale(1)";
+      }, 220);
+    }
+
+    function makeSnowflakes(num) {
+      snowflakesEl.innerHTML = "";
+      for (let i = 0; i < num; i++) {
+        const span = document.createElement("span");
+        span.className = "flake";
+        span.textContent = "❄️";
+        snowflakesEl.appendChild(span);
+      }
+    }
+
+    function buildChoices(correct) {
+      const set = new Set([correct]);
+      while (set.size < 4) {
+        set.add(Math.floor(Math.random() * 10) + 1);
+      }
+      return shuffle([...set]);
+    }
+
+    function disableAnswerButtons() {
+      const buttons = document.querySelectorAll(".answer-btn");
       buttons.forEach(btn => btn.disabled = true);
+    }
+
+    function setPrincessMood(type) {
+      if (type === "happy") {
+        princessEmojiEl.textContent = "👸🌟";
+      } else if (type === "try") {
+        princessEmojiEl.textContent = "👸";
+      } else {
+        princessEmojiEl.textContent = "👸❄️";
+      }
+    }
+
+    function newRound() {
+      messageEl.textContent = "";
+      nextBtn.style.display = "none";
+      setPrincessMood("normal");
+
+      correctAnswer = Math.floor(Math.random() * 10) + 1;
+      makeSnowflakes(correctAnswer);
+
+      const choices = buildChoices(correct);
+      answersEl.innerHTML = "";
+
+      choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.className = "answer-btn";
+        btn.textContent = choice;
+        btn.addEventListener("click", () => checkAnswer(choice));
+        answersEl.appendChild(btn);
+      });
     }
 
     function checkAnswer(choice) {
       if (choice === correctAnswer) {
         score++;
         scoreEl.textContent = score;
-        messageEl.textContent = "Yay! You got it right!";
-        rewardEl.textContent = "✨ Magic Star! ✨";
-        princessFace.textContent = "👸🌟";
-        disableButtons();
+        updateUnicorn();
+        setPrincessMood("happy");
+        messageEl.textContent = "Yay! The unicorn is prettier now!";
+        disableAnswerButtons();
         nextBtn.style.display = "inline-block";
       } else {
+        setPrincessMood("try");
         messageEl.textContent = "Try again, princess 💖";
-        rewardEl.textContent = "❄️";
-        princessFace.textContent = "👸";
       }
     }
 
-    nextBtn.addEventListener("click", generateRound);
+    nextBtn.addEventListener("click", newRound);
 
-    generateRound();
+    updateUnicorn();
+    newRound();
   </script>
 </body>
 </html>
