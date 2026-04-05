@@ -407,7 +407,7 @@
       correctAnswer = Math.floor(Math.random() * 10) + 1;
       makeSnowflakes(correctAnswer);
 
-      const choices = buildChoices(correct);
+      const choices = buildChoices(correctAnswer);
       answersEl.innerHTML = "";
 
       choices.forEach(choice => {
